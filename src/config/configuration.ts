@@ -31,7 +31,7 @@ export default (): AppConfig => {
     nodeEnv: process.env.NODE_ENV ?? 'development',
     gemini: {
       apiKey: process.env.GEMINI_API_KEY ?? '',
-      chatModel: process.env.GEMINI_CHAT_MODEL ?? 'gemini-2.5-flash',
+      chatModel: process.env.GEMINI_CHAT_MODEL ?? 'gemini-flash-latest',
       embeddingModel: process.env.GEMINI_EMBEDDING_MODEL ?? 'gemini-embedding-001',
     },
     chroma: {
