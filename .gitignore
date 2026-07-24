@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment
+.env
+
+# Uploads (temporary PDF storage)
+uploads/*
+!uploads/.gitkeep
+
+# ChromaDB local persistence (if run in persistent mode)
+chroma-data/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
