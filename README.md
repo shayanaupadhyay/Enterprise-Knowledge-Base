@@ -1,3 +1,4 @@
+![Uploading image.png…]()
 # Enterprise Knowledge Base Chatbot
 
 A production-grade Retrieval-Augmented Generation (RAG) backend built with **NestJS**, **Gemini 2.5 Flash**, and **ChromaDB**. Upload PDF documents, they get chunked and embedded into a vector store, and users ask questions that are answered strictly from the ingested content — no hallucinations.
