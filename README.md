@@ -115,7 +115,7 @@ rag chroma db/
 
 **RAG + Chat (query pipeline)**
 - `rag/prompt/prompt-builder.service.ts` — the single source of truth for the "answer only from context, never hallucinate, say '*I couldn't find this information in the uploaded knowledge base.*' otherwise" instruction.
-- `rag/gemini-chat.service.ts` — wraps `gemini-2.5-flash` generation.
+- `rag/gemini-chat.service.ts` — wraps `gemini-flash-latest` generation.
 - `rag/rag.service.ts` — embeds the question, retrieves top-K chunks from Chroma, short-circuits to the "not found" message if nothing relevant exists, otherwise builds the prompt and generates the answer, then returns de-duplicated source filenames.
 - `chat/chat.controller.ts` + `chat/dto/chat-request.dto.ts` — `POST /chat`; rejects empty/whitespace-only questions via DTO validation before the request reaches any service.
 
@@ -163,7 +163,7 @@ PORT=3000
 NODE_ENV=development
 
 GEMINI_API_KEY=your_gemini_api_key_here
-GEMINI_CHAT_MODEL=gemini-2.5-flash
+GEMINI_CHAT_MODEL=gemini-flash-latest
 GEMINI_EMBEDDING_MODEL=gemini-embedding-001
 
 CHROMA_URL=http://localhost:8000
@@ -309,7 +309,7 @@ Submit an empty question to confirm it's rejected with `400 Bad Request` before 
 │  │        ▼                       │        │   2. query VectorStore (top5) │     │
 │  │  2. ChunkingService             │        │   3. PromptBuilderService     │     │
 │  │     recursive, 800/150 overlap  │        │   4. GeminiChatService        │     │
-│  │        │                         │        │      (gemini-2.5-flash)      │     │
+│  │        │                         │        │      (gemini-flash-latest)   │     │
 │  │        ▼                         │        └──────────┬────────────────--┘     │
 │  │  3. EmbeddingModule (Gemini)     │                    │                        │
 │  │        │                         │                    │                        │
@@ -337,3 +337,22 @@ Submit an empty question to confirm it's rejected with `400 Bad Request` before 
 **Upload flow:** PDF → extract text → clean → markdown → recursive chunk (800/150) → embed each chunk (Gemini) → store `{text, embedding, metadata}` in Chroma.
 
 **Chat flow:** question → embed (Gemini) → similarity search in Chroma (top 5) → assemble context → secure system prompt (answer-only-from-context) → Gemini generation → `{ answer, sources }`.
+
+---
+
+## 8. Deployment (Render + Chroma Cloud)
+
+Production uses [Render](https://render.com) for the NestJS app and [Chroma Cloud](https://trychroma.com) for the vector store — no server management, no persistent disk to pay for. `vector-store/chroma-vector-store.service.ts` picks `CloudClient` automatically whenever `CHROMA_API_KEY` is set, and falls back to a local `ChromaClient` otherwise, so the same code runs in both environments unchanged.
+
+**One-time setup:**
+
+1. Create a database at [trychroma.com](https://trychroma.com) and copy its API key, tenant, and database name.
+2. On [dashboard.render.com](https://dashboard.render.com), **New → Blueprint**, point it at this repo. Render reads `render.yaml` at the repo root and creates the web service automatically.
+3. Render will prompt for the env vars marked `sync: false` in `render.yaml` — fill in:
+   - `GEMINI_API_KEY` — from [aistudio.google.com/app/apikey](https://aistudio.google.com/app/apikey)
+   - `CHROMA_API_KEY`, `CHROMA_TENANT`, `CHROMA_DATABASE` — from step 1
+4. Deploy. Render runs `npm install && npm run build`, then `npm run start:prod`, and binds to the `PORT` it injects automatically.
+
+**Redeploys:** push to `main` — Render auto-deploys on every push once the Blueprint is connected.
+
+**Note:** the free Render plan spins the service down after inactivity; the first request after idle takes a few seconds to wake it back up. Fine for a portfolio demo, not for production traffic.

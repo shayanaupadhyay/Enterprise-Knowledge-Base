@@ -8,6 +8,9 @@ export interface AppConfig {
   };
   chroma: {
     url: string;
+    apiKey: string | undefined;
+    tenant: string | undefined;
+    database: string | undefined;
     collectionName: string;
   };
   upload: {
@@ -36,6 +39,9 @@ export default (): AppConfig => {
     },
     chroma: {
       url: process.env.CHROMA_URL ?? 'http://localhost:8000',
+      apiKey: process.env.CHROMA_API_KEY || undefined,
+      tenant: process.env.CHROMA_TENANT || undefined,
+      database: process.env.CHROMA_DATABASE || undefined,
       collectionName: process.env.CHROMA_COLLECTION_NAME ?? 'knowledge_base',
     },
     upload: {

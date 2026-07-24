@@ -5,7 +5,7 @@ import {
   OnModuleInit,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { ChromaClient, Collection, IEmbeddingFunction } from 'chromadb';
+import { ChromaClient, CloudClient, Collection, IEmbeddingFunction } from 'chromadb';
 import { AppConfig } from '../config/configuration';
 import { VectorDocument, VectorQueryResult, VectorStore } from './vector-store.interface';
 
@@ -31,7 +31,9 @@ export class ChromaVectorStoreService implements VectorStore, OnModuleInit {
 
   constructor(private readonly configService: ConfigService<AppConfig, true>) {
     const chroma = this.configService.get('chroma', { infer: true });
-    this.client = new ChromaClient({ path: chroma.url });
+    this.client = chroma.apiKey
+      ? new CloudClient({ apiKey: chroma.apiKey, tenant: chroma.tenant, database: chroma.database })
+      : new ChromaClient({ path: chroma.url });
     this.collectionName = chroma.collectionName;
   }
 

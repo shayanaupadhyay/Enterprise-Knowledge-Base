@@ -28,7 +28,7 @@ class EnvironmentVariables {
 
   @IsOptional()
   @IsString()
-  GEMINI_CHAT_MODEL: string = 'gemini-2.5-flash';
+  GEMINI_CHAT_MODEL: string = 'gemini-flash-latest';
 
   @IsOptional()
   @IsString()
@@ -37,6 +37,18 @@ class EnvironmentVariables {
   @IsOptional()
   @IsString()
   CHROMA_URL: string = 'http://localhost:8000';
+
+  @IsOptional()
+  @IsString()
+  CHROMA_API_KEY?: string;
+
+  @IsOptional()
+  @IsString()
+  CHROMA_TENANT?: string;
+
+  @IsOptional()
+  @IsString()
+  CHROMA_DATABASE?: string;
 
   @IsOptional()
   @IsString()
