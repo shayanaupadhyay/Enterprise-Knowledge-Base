@@ -1,8 +1,18 @@
 # Enterprise Knowledge Base Chatbot
 
-A production-grade Retrieval-Augmented Generation (RAG) backend built with **NestJS**, **Gemini 2.5 Flash**, and **ChromaDB**. Upload PDF documents, they get chunked and embedded into a vector store, and users ask questions that are answered strictly from the ingested content — no hallucinations.
+A production-grade Retrieval-Augmented Generation (RAG) backend built with **NestJS**, **Gemini**, and **ChromaDB**. Upload PDF documents, they get chunked and embedded into a vector store, and users ask questions that are answered strictly from the ingested content — no hallucinations.
 
 This is the foundation for an AI Engineering course. The architecture is intentionally layered so future lessons (Ragas evaluation, Redis memory, hybrid search, auth, streaming, observability) can be added as **new modules**, not rewrites.
+
+**Live demo:** [enterprise-knowledge-base.onrender.com](https://enterprise-knowledge-base.onrender.com)
+
+### Screenshots
+
+**Ask questions grounded in your uploaded documents:**
+![App demo — chat answering from an uploaded PDF](docs/screenshots/app-demo.png)
+
+**Chunks + embeddings stored in Chroma Cloud:**
+![ChromaDB collection showing indexed chunks](docs/screenshots/chroma-collection.png)
 
 ---
 
